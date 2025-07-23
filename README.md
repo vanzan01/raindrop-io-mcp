@@ -28,12 +28,13 @@ claude mcp add raindrop-io --scope project -e RAINDROP_API_TOKEN=your_token_here
 ```
 
 ### 5. Restart Claude Code
-Server provides these 7 tools:
+Server provides these 8 tools:
 - `search_bookmarks` - Search bookmarks with filters
 - `create_bookmark` - Create new bookmarks
 - `get_bookmark` - Get bookmark details
 - `update_bookmark` - Update existing bookmarks  
 - `delete_bookmark` - Remove bookmarks
+- `get_recent_unsorted` - Get recent unsorted bookmarks (convenience tool for accessing newest items in Unsorted collection)
 - `list_collections` - List all collections
 - `create_collection` - Create new collections
 
