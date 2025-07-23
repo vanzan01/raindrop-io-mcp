@@ -178,3 +178,18 @@ Desktop.ini
 *.swp
 *.swo
 
+# UV package manager
+uv.lock
+
+# Testing artifacts
+.pytest_cache/
+*.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
