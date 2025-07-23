@@ -110,103 +110,39 @@ uv run python -m mypy src/
 
 This MCP server enables integration with a sophisticated **Claude Code Agentic Bookmark Research Assistant** that transforms bookmark management into an intelligent knowledge curation system.
 
-### System Architecture
+### The Transformation: From Chaos to Knowledge
 
 ```mermaid
-graph TB
-    subgraph "Claude Code Agent Layer"
-        CC[Claude Code] --> SC[Slash Commands]
-        SC --> SC1["sort-unsorted"]
-        SC --> SC2["research-enhance-recent"] 
-        SC --> SC3["research-enhance-collection"]
-        CC --> TM[TaskMaster Integration]
-        TM --> TM1[Project Management]
-        TM --> TM2[Task Generation]
+graph LR
+    subgraph "🔥 BEFORE"
+        MESS["📚 Messy Bookmarks<br/>• Hundreds of unsorted links<br/>• No descriptions<br/>• Lost in the pile"]
     end
-
-    subgraph "Quality Validation System"
-        PRE[Pre-tool Hook] --> BLOCK{Quality Gate}
-        BLOCK -->|❌ Fail| RETRY[Retry Required]
-        BLOCK -->|✅ Pass| ALLOW[Allow Update]
-        POST[Post-tool Hook] --> VERIFY[Completion Verification]
-        VERIFY --> AUDIT[Audit Logging]
-    end
-
-    subgraph "MCP Integration Layer"
-        MCP[Raindrop.io MCP Server] --> API[Raindrop.io API]
-        MCP --> TOOLS[8 Available Tools]
-        TOOLS --> T1[search_bookmarks]
-        TOOLS --> T2[get_recent_unsorted]
-        TOOLS --> T3[update_bookmark]
-        TOOLS --> T4[create_bookmark]
-        TOOLS --> T5[list_collections]
-    end
-
-    subgraph "Research Enhancement Pipeline"
-        FETCH[WebFetch Content] --> ANALYZE[Content Analysis]
-        ANALYZE --> SCORE[Confidence Scoring]
-        SCORE --> TAGS[Semantic Tagging]
-        TAGS --> COLLECT[Collection Assignment]
-        SEARCH[WebSearch Research] --> CONTEXT[Technology Context]
-        CONTEXT --> TRENDS[Trend Analysis]
-    end
-
-    subgraph "Batch Processing Infrastructure"
-        BP[Batch Processor] --> RL[Rate Limiting 1.5s]
-        BP --> CACHE[Research Cache]
-        CACHE --> REUSE[60%+ Cache Hits]
-        BP --> BACKUP[Safety Backups]
-        BP --> PROGRESS[Progress Tracking]
-    end
-
-    subgraph "Analytics & Intelligence"
-        EXPORT[Export System] --> CSV[CSV Export]
-        EXPORT --> HTML[HTML Export] 
-        EXPORT --> JSON[Analytics JSON]
-        AI[Analytics Intelligence] --> QM[Quality Metrics]
-        AI --> KG[Knowledge Graphs]
-        AI --> LP[Learning Paths]
-        AI --> GA[Gap Analysis]
-    end
-
-    subgraph "Data Flow"
-        UNSORTED[Unsorted Bookmarks] --> SC1
-        SC1 --> PRE
-        ALLOW --> MCP
-        MCP --> FETCH
-        MCP --> SEARCH
-        COLLECT --> POST
-        POST --> ENHANCED[Enhanced Bookmarks]
-        ENHANCED --> EXPORT
-    end
-
-    subgraph "Advanced Capabilities"
-        AC1[Autonomous Agent Behavior] --> DECISION[Decision Making]
-        AC2[Domain-Specific Intelligence] --> STRATEGY[Research Strategies]
-        AC3[Collection Intelligence] --> TAXONOMY[Smart Categorization]
-        AC4[Safety-First Processing] --> ROLLBACK[Rollback Capability]
-    end
-
-    %% Connections
-    CC --> PRE
-    CC --> POST
-    SC1 --> BP
-    BP --> MCP
-    ENHANCED --> AI
     
-    %% Styling
-    classDef agent fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef mcp fill:#f3e5f5,stroke:#4a148c,stroke-width:2px  
-    classDef research fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
-    classDef quality fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef analytics fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    subgraph "🤖 AI MAGIC"
+        AGENT["🧠 Claude Code Agent<br/><br/>🔍 Researches every link<br/>🏷️ Adds smart tags<br/>📝 Writes summaries<br/>📁 Organizes collections"]
+        
+        TOOLS["⚡ Powered by MCP<br/><br/>• get_recent_unsorted<br/>• Auto-enhancement<br/>• Quality validation<br/>• Batch processing"]
+    end
     
-    class CC,SC,TM agent
-    class MCP,TOOLS,API mcp
-    class FETCH,ANALYZE,SEARCH,CONTEXT research
-    class PRE,POST,BLOCK,VERIFY quality
-    class EXPORT,AI,KG,LP analytics
+    subgraph "✨ AFTER"
+        KNOWLEDGE["🎯 Knowledge Base<br/>• Rich research notes<br/>• Perfect organization<br/>• Learning paths<br/>• Analytics insights"]
+    end
+    
+    MESS -->|"🪄 One Command"| AGENT
+    AGENT <--> TOOLS
+    AGENT -->|"🚀 95% Success Rate"| KNOWLEDGE
+    
+    %% Styling for impact
+    classDef before fill:#ffebee,stroke:#c62828,stroke-width:3px,color:#000
+    classDef magic fill:#e8f5e8,stroke:#2e7d32,stroke-width:3px,color:#000
+    classDef after fill:#e3f2fd,stroke:#1565c0,stroke-width:3px,color:#000
+    
+    class MESS before
+    class AGENT,TOOLS magic
+    class KNOWLEDGE after
 ```
+
+**🎯 Transform 50+ Bookmarks in Minutes, Not Hours**
 
 ### Key System Capabilities
 
