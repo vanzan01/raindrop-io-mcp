@@ -182,8 +182,6 @@ This system transforms the basic MCP server into a complete **Knowledge Curation
 - Supports batch processing of large bookmark collections
 - Maintains production-grade safety and quality standards
 
-For implementation details, see the companion `mcp-app` directory containing the complete agentic bookmark management system.
-
 ## License
 
 MIT
