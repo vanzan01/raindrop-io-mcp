@@ -70,3 +70,9 @@ markers = [
     "slow: Slow running tests",
 ]
 asyncio_mode = "auto"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+]

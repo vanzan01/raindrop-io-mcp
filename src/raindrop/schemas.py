@@ -133,6 +133,14 @@ class DeleteBookmarkArgs(BaseModel):
     bookmark_id: int = Field(..., description="Bookmark ID to delete")
 
 
+class GetRecentUnsortedArgs(BaseModel):
+    """Arguments for get_recent_unsorted tool."""
+
+    limit: Optional[int] = Field(
+        50, ge=1, le=50, description="Maximum number of recent unsorted bookmarks to retrieve (default: 50, max: 50)"
+    )
+
+
 class ListCollectionsArgs(BaseModel):
     """Arguments for list_collections tool."""
 
@@ -405,6 +413,21 @@ MCP_TOOLS = {
                 }
             },
             "required": ["bookmark_id"],
+        },
+    },
+    "get_recent_unsorted": {
+        "description": "Get recent unsorted bookmarks (convenience tool for accessing newest items in Unsorted collection)",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 50,
+                    "default": 50,
+                    "description": "Maximum number of recent unsorted bookmarks to retrieve",
+                }
+            },
         },
     },
     "list_collections": {

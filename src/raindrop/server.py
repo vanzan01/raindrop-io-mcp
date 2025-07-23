@@ -15,6 +15,7 @@ from ..raindrop.client import RaindropClient
 from ..raindrop.auth import AuthenticationManager
 from ..raindrop.rate_limiter import RateLimiter
 from ..utils.logging import get_logger
+from ..tools.bookmarks import get_recent_unsorted
 from ..utils.transformers import (
     validate_mcp_tool_args,
     mcp_to_raindrop_search_params,
@@ -131,6 +132,8 @@ class RaindropMCPServer:
                 result = await self._handle_list_collections(arguments)
             elif name == "create_collection":
                 result = await self._handle_create_collection(arguments)
+            elif name == "get_recent_unsorted":
+                result = await self._handle_get_recent_unsorted(arguments)
             else:
                 raise ValueError(f"Unknown tool: {name}")
 
@@ -367,6 +370,12 @@ class RaindropMCPServer:
                 "lastUpdate": mcp_collection.lastUpdate,
             },
         }
+
+    async def _handle_get_recent_unsorted(
+        self, arguments: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Handle get_recent_unsorted tool call."""
+        return await get_recent_unsorted(self.raindrop_client, arguments)
 
     async def initialize(self) -> None:
         """Initialize the server and its dependencies."""

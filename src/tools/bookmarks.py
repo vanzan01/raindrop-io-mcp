@@ -6,6 +6,8 @@ from ..utils.transformers import (
     mcp_to_raindrop_create_bookmark,
     mcp_to_raindrop_update_bookmark,
     raindrop_to_mcp_bookmark,
+    mcp_to_raindrop_search_params,
+    raindrop_to_mcp_search_results,
     validate_mcp_tool_args,
 )
 from ..utils.logging import get_logger
@@ -180,4 +182,82 @@ async def delete_bookmark(
         "success": success,
         "tool": "delete_bookmark",
         "data": {"bookmark_id": bookmark_id, "deleted": success},
+    }
+
+
+async def get_recent_unsorted(
+    client: RaindropClient, arguments: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Get recent unsorted bookmarks.
+    
+    This is a convenience function that retrieves the most recent bookmarks
+    from the "Unsorted" collection (collection_id=-1), sorted by creation date 
+    in descending order (newest first).
+
+    Args:
+        client: Raindrop API client
+        arguments: MCP tool arguments containing optional 'limit' parameter
+
+    Returns:
+        Recent unsorted bookmarks in MCP format
+    """
+    limit = arguments.get("limit", 50)
+    logger.info(f"Getting {limit} recent unsorted bookmarks")
+
+    # Validate arguments
+    validate_mcp_tool_args("get_recent_unsorted", arguments)
+
+    # Build search parameters for unsorted collection
+    search_args = {
+        "collection_id": -1,  # Unsorted collection
+        "sort": "created",    # Sort field
+        "order": "desc",      # Newest first (descending order)
+        "page": 0,           # First page
+        "per_page": min(limit, 50),  # Respect API limits
+    }
+
+    # Convert MCP args to Raindrop API params
+    params = mcp_to_raindrop_search_params(search_args)
+
+    # Call Raindrop API
+    api_response = await client.search_bookmarks(**params)
+
+    # Convert response to MCP format
+    mcp_response = raindrop_to_mcp_search_results(
+        bookmarks=api_response["items"],
+        total=api_response.get("total", 0),
+        page=params.get("page", 0),
+        per_page=params.get("perpage", 50),
+    )
+
+    return {
+        "success": True,
+        "tool": "get_recent_unsorted",
+        "data": {
+            "items": [
+                {
+                    "id": item.id,
+                    "title": item.title,
+                    "url": item.url,
+                    "excerpt": item.excerpt,
+                    "note": item.note,
+                    "type": item.type,
+                    "tags": item.tags,
+                    "created": item.created,
+                    "lastUpdate": item.lastUpdate,
+                    "domain": item.domain,
+                    "collection_id": item.collection_id,
+                    "collection_title": item.collection_title,
+                }
+                for item in mcp_response.items
+            ],
+            "pagination": {
+                "count": mcp_response.count,
+                "total": mcp_response.total,
+                "page": mcp_response.page,
+                "per_page": mcp_response.per_page,
+                "has_more": mcp_response.has_more,
+            },
+        },
     }

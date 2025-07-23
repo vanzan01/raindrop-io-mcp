@@ -62,11 +62,14 @@ class TestUtilityFunctions:
         assert validate_collection_id(1) is True
         assert validate_collection_id(999) is True
         assert validate_collection_id(None) is True  # None is allowed
+        assert validate_collection_id(-1) is True  # Unsorted collection
+        assert validate_collection_id(-99) is True  # Trash collection
     
     def test_validate_collection_id_invalid(self):
         """Test collection ID validation with invalid IDs."""
         assert validate_collection_id(0) is False
-        assert validate_collection_id(-1) is False
+        assert validate_collection_id(-2) is False  # Not a system collection
+        assert validate_collection_id(-100) is False  # Not a system collection
         assert validate_collection_id("123") is False
         assert validate_collection_id(1.5) is False
     
@@ -270,6 +273,40 @@ class TestMCPToolValidation:
         
         with pytest.raises(ValueError, match="bookmark_id must be an integer"):
             validate_mcp_tool_args("get_bookmark", args)
+    
+    def test_validate_get_recent_unsorted_valid(self):
+        """Test get_recent_unsorted validation with valid args."""
+        # Should not raise for no args (uses defaults)
+        validate_mcp_tool_args("get_recent_unsorted", {})
+        
+        # Should not raise for valid limit
+        validate_mcp_tool_args("get_recent_unsorted", {"limit": 25})
+        validate_mcp_tool_args("get_recent_unsorted", {"limit": 1})
+        validate_mcp_tool_args("get_recent_unsorted", {"limit": 50})
+    
+    def test_validate_get_recent_unsorted_invalid_limit(self):
+        """Test get_recent_unsorted validation with invalid limit."""
+        # Test limit too low
+        with pytest.raises(ValueError):
+            validate_mcp_tool_args("get_recent_unsorted", {"limit": 0})
+        
+        with pytest.raises(ValueError):
+            validate_mcp_tool_args("get_recent_unsorted", {"limit": -1})
+        
+        # Test limit too high
+        with pytest.raises(ValueError):
+            validate_mcp_tool_args("get_recent_unsorted", {"limit": 51})
+        
+        with pytest.raises(ValueError):
+            validate_mcp_tool_args("get_recent_unsorted", {"limit": 100})
+    
+    def test_validate_get_recent_unsorted_invalid_type(self):
+        """Test get_recent_unsorted validation with invalid limit type."""
+        with pytest.raises(ValueError):
+            validate_mcp_tool_args("get_recent_unsorted", {"limit": "invalid"})
+        
+        with pytest.raises(ValueError):
+            validate_mcp_tool_args("get_recent_unsorted", {"limit": 25.5})
 
 
 class TestErrorFormatting:

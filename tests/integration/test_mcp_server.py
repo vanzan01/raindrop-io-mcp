@@ -5,7 +5,7 @@ import pytest_asyncio
 import asyncio
 import json
 from unittest.mock import AsyncMock, Mock, patch
-from src.raindrop_mcp.server import RaindropMCPServer
+from src.raindrop.server import RaindropMCPServer
 from src.raindrop.models import BookmarkModel, CollectionModel, UserModel
 
 
@@ -86,9 +86,9 @@ class TestRaindropMCPServer:
         
         try:
             # Create and start patches
-            mock_auth_patch = patch('src.raindrop_mcp.server.AuthenticationManager')
-            mock_rate_limiter_patch = patch('src.raindrop_mcp.server.RateLimiter')
-            mock_client_patch = patch('src.raindrop_mcp.server.RaindropClient')
+            mock_auth_patch = patch('src.raindrop.server.AuthenticationManager')
+            mock_rate_limiter_patch = patch('src.raindrop.server.RateLimiter')
+            mock_client_patch = patch('src.raindrop.server.RaindropClient')
             
             patches = [mock_auth_patch, mock_rate_limiter_patch, mock_client_patch]
             mock_auth = mock_auth_patch.start()
@@ -127,9 +127,9 @@ class TestRaindropMCPServer:
     @pytest.mark.asyncio
     async def test_server_initialization(self):
         """Test server initialization process."""
-        with patch('src.raindrop_mcp.server.AuthenticationManager') as mock_auth, \
-             patch('src.raindrop_mcp.server.RateLimiter') as mock_rate_limiter, \
-             patch('src.raindrop_mcp.server.RaindropClient') as mock_client:
+        with patch('src.raindrop.server.AuthenticationManager') as mock_auth, \
+             patch('src.raindrop.server.RateLimiter') as mock_rate_limiter, \
+             patch('src.raindrop.server.RaindropClient') as mock_client:
             
             mock_auth_instance = AsyncMock()
             mock_auth.return_value = mock_auth_instance
@@ -165,7 +165,8 @@ class TestRaindropMCPServer:
             "update_bookmark",
             "delete_bookmark",
             "list_collections",
-            "create_collection"
+            "create_collection",
+            "get_recent_unsorted"
         ]
         
         for expected_tool in expected_tools:
@@ -320,6 +321,20 @@ class TestRaindropMCPServer:
         
         # Multiple cleanup calls should be safe
         await server.cleanup()
+    
+    @pytest.mark.asyncio
+    async def test_get_recent_unsorted_tool(self, server):
+        """Test get_recent_unsorted tool execution."""
+        arguments = {"limit": 25}
+        
+        result = await server._call_tool("get_recent_unsorted", arguments)
+        
+        assert len(result) == 1
+        response_data = json.loads(result[0].text)
+        assert response_data["success"] is True
+        assert "data" in response_data
+        assert "items" in response_data["data"]
+        assert "pagination" in response_data["data"]
     
     @pytest.mark.asyncio
     async def test_uninitialized_server_error(self):

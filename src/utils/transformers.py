@@ -47,7 +47,8 @@ def validate_collection_id(collection_id: Optional[int]) -> bool:
     """Validate collection ID."""
     if collection_id is None:
         return True
-    return isinstance(collection_id, int) and collection_id > 0
+    # Allow special system collections: -1 (Unsorted), -99 (Trash), and positive IDs
+    return isinstance(collection_id, int) and (collection_id > 0 or collection_id in [-1, -99])
 
 
 def sanitize_text_field(text: Optional[str], max_length: int = 1000) -> str:
@@ -331,6 +332,15 @@ def validate_mcp_tool_args(tool_name: str, args: Dict[str, Any]) -> None:
             raise ValueError("bookmark_id is required")
         if not isinstance(args["bookmark_id"], int):
             raise ValueError("bookmark_id must be an integer")
+
+    elif tool_name == "get_recent_unsorted":
+        # Validate limit parameter if provided
+        if "limit" in args:
+            limit = args["limit"]
+            if not isinstance(limit, int):
+                raise ValueError("limit must be an integer")
+            if limit < 1 or limit > 50:
+                raise ValueError("limit must be between 1 and 50")
 
     elif tool_name == "create_collection":
         if "title" not in args:
