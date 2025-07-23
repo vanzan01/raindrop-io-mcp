@@ -116,9 +116,9 @@ This MCP server enables integration with a sophisticated **Claude Code Agentic B
 graph TB
     subgraph "Claude Code Agent Layer"
         CC[Claude Code] --> SC[Slash Commands]
-        SC --> SC1[/sort-unsorted]
-        SC --> SC2[/research-enhance-recent] 
-        SC --> SC3[/research-enhance-collection]
+        SC --> SC1["sort-unsorted"]
+        SC --> SC2["research-enhance-recent"] 
+        SC --> SC3["research-enhance-collection"]
         CC --> TM[TaskMaster Integration]
         TM --> TM1[Project Management]
         TM --> TM2[Task Generation]
